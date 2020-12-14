@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  mysql:
+    env_file:
+      - .env
+    image: mysql:${MYSQL_VERSION}
+    container_name: lnmpr-mysql
+    extra_hosts:
+      - ${MYSQL_HOST}:127.0.0.1
+    hostname: ${MYSQL_HOST}
+    ports:
+      - 3306:${MYSQL_PORT}
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+
+    # depends_on: {}
