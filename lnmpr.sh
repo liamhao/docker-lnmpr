@@ -6,6 +6,9 @@
 # 将字符串转为数组,数组元素会以字符串中的空格作为分割
 # array=($value)
 
+if [ "$1" = "up" ]
+then
+
 # 获取文件内容,并将以"#"开头的行过滤掉
 env_content=($(grep -v '^#' .env | xargs))
 
@@ -20,20 +23,27 @@ do
 done
 
 # 以守护模式启动,在后台运行
-docker-compose up -d
+docker-compose up -d --build
 
 # 在bash中不能加入-t参数,否则会报"the input device is not a TTY"
 # 在远程服务上执行的命令块,"remot_command"可自定义
 # 必须跟在 docker exec 命令行后面
 # msyql登陆命令需要写全参数,否则会因为默认的my.conf中bind_address=127.0.0.1
-docker exec -i lnmpr-mysql bash << remot_command
+# docker exec -i lnmpr-mysql bash << remot_command
 
-mysql -hlocalhost -uroot -p${env_config[MYSQL_ROOT_PASSWORD]} --port=${env_config[MYSQL_PORT]}
+# mysql -hlocalhost -uroot -p${env_config[MYSQL_ROOT_PASSWORD]} --port=${env_config[MYSQL_PORT_DOCKER]}
 
-ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '123456';
+# ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY "${env_config[MYSQL_ROOT_PASSWORD]}";
 
-FLUSH PRIVILEGES;
+# FLUSH PRIVILEGES;
 
-exit
+# exit
 
-remot_command
+# remot_command
+
+  
+else
+  docker-compose $1
+fi
+
+

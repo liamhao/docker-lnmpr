@@ -1,17 +1,52 @@
 version: '3'
 
 services:
+
   mysql:
     env_file:
       - .env
     image: mysql:${MYSQL_VERSION}
     container_name: lnmpr-mysql
-    extra_hosts:
-      - ${MYSQL_HOST}:127.0.0.1
-    hostname: ${MYSQL_HOST}
     ports:
-      - 3306:${MYSQL_PORT}
+      - ${MYSQL_PORT_LOCAL}:${MYSQL_PORT_DOCKER}
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
 
-    # depends_on: {}
+  redis:
+    env_file:
+      - .env
+    image: redis:${REDIS_VERSION}
+    container_name: lnmpr-redis
+    ports:
+      - ${REDIS_PORT_LOCAL}:${REDIS_PORT_DOCKER}
+
+  php:
+    env_file:
+      - .env
+    # image: php:${PHP_VERSION}
+    build: 
+      context: ./php
+      dockerfile: Dockerfile
+      args:
+        php_version: ${PHP_VERSION}
+    container_name: lnmpr-php
+    volumes:
+      - ${PHP_WORK_DIR_LOCAL}:${PHP_WORK_DIR_DOCKER}
+    ports:
+      - ${PHP_PORT_LOCAL}:${PHP_PORT_DOCKER}
+    depends_on: 
+      - mysql
+      - redis
+
+  nginx:
+    env_file:
+      - .env
+    image: nginx:${NGINX_VERSION}
+    container_name: lnmpr-nginx
+    volumes:
+      - ${NGINX_WORK_DIR_LOCAL}:${NGINX_WORK_DIR_DOCKER}
+      - ${NGINX_CONF_LOCAL}:${NGINX_CONF_DOCKER}
+    ports:
+      - ${NGINX_PORT_LOCAL}:${NGINX_PORT_DOCKER}
+    depends_on: 
+      - php
