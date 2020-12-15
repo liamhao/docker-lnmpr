@@ -47,6 +47,8 @@ privilegeMysqlUsers()
     CREATE DATABASE ${env_config[DB_DATABASE]};
     exit
 remot_command
+
+  echo "MySQL用户授权完成。lnmpr服务容器已启动，您可以访问 http://localhost:${env_config[NGINX_PORT_LOCAL]} 查看"
 }
 
 readEnvFile
