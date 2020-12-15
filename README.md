@@ -16,6 +16,7 @@ $ git clone https://github.com/liamhao/docker-lnmpr.git
 3. 进入项目目录，复制一份配置文件，并根据自己的需求进行修改
 ```bash
 $ cd docker-lnmpr
+
 $ cp .env.example .env
 ```
 4. 执行启动程序。此过程需要通过网络下载资源，启动时间会根据您当前的网络状况而定。出现`[Warning]`提示可以忽略。
@@ -24,12 +25,25 @@ $ ./lnmpr.sh up
 ```
 5. 完成啦！可以访问`localhost`看下效果了～
 
-> ### **注意**
-> 项目中访问`MySQL`和`Redis`服务，需要修改`Laravel`项目中的`.env`文件。将`DB_HOST`的值改为`lnmpr-mysql`，`REDIS_HOST`的值改为`lnmpr-redis`
+## 注意事项
+- 项目中访问`MySQL`和`Redis`服务，需要修改`Laravel`项目中的`.env`文件。将`DB_HOST`的值改为`lnmpr-mysql`，`REDIS_HOST`的值改为`lnmpr-redis`
 ```
 DB_HOST=lnmpr-mysql
+
 REDIS_HOST=lnmpr-redis
 ```
+- `Mac`系统下:
+如果报错`Mounts denied: approving /path/to/work: file does not exist`。需要打开`Docker`的设置面板，点击`Experimental Features`标签，关闭`Use gRPC FUSE for file sharing`选项
+- 修改挂载的文件路径后，需要执行`./lnmpr.sh reup`才会生效，此命令会删除已生成的容器，然后重新构建容器。**容器内的数据会丢失**。
+- 构建的`PHP`容器默认会安装`pdo_mysql`和`redis`扩展，安装`redis`扩展会通过`pecl`下载扩展包，此过程需要看网络环境
+- 配置文件中不能有空格，空格后的信息将被忽略
+- 在执行类似`php artisan migrate`的命令时，需要进入`lnmpr-php`容器内执行命令。
+```bash
+$ docker exec -it lnmpr-php bash
+
+root@66472e3dff92:/var/www/html# php artisan migrate
+```
+
 ## 配置信息
 
 ### .env
@@ -86,10 +100,3 @@ REDIS_HOST=lnmpr-redis
     > 本机端口映射，用来接收网络请求，访问本机`REDIS_PORT_LOCAL`端口会转发到`Redis`服务容器中的`REDIS_PORT_DOCKER`端口
     + **REDIS_PORT_DOCKER**
     > `Redis`服务容器端口，用来接收网络请求
-
-## 注意事项
-- `Mac`系统下:
-如果报错`Mounts denied: approving /path/to/work: file does not exist`。需要打开`Docker`的设置面板，点击`Experimental Features`标签，关闭`Use gRPC FUSE for file sharing`选项
-- 修改挂载的文件路径后，需要执行`./lnmpr.sh reup`才会生效，此命令会删除已生成的容器，然后重新构建容器。**容器内的数据会丢失**。
-- 构建的`PHP`容器默认会安装`pdo_mysql`和`redis`扩展，安装`redis`扩展会通过`pecl`下载扩展包，此过程需要看网络环境
-- 配置文件中不能有空格，空格后的信息将被忽略
