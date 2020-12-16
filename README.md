@@ -39,10 +39,16 @@ $ ./lnmpr.sh up
 
 - `Mac`系统下:
 如果报错`Mounts denied: approving /path/to/work: file does not exist`。需要打开`Docker`的设置面板，点击`Experimental Features`标签，关闭`Use gRPC FUSE for file sharing`选项
-- 修改挂载的文件路径后，需要执行`./lnmpr.sh reup`才会生效，此命令会删除已生成的容器，然后重新构建容器。**容器内的数据会丢失**。
-- 构建的`PHP`容器默认会安装`pdo_mysql`和`redis`扩展，安装`redis`扩展会通过`pecl`下载扩展包，此过程需要看网络环境
+
+- 修改挂载的文件路径后，需要执行`./lnmpr.sh reup`才会生效，此命令会删除已生成的容器，然后重新构建容器。**容器内的数据会丢失**
+
+- 如果修改`php`服务的端口映射`PHP_PORT_DOCKER`参数，需要同步修改`default.conf`中`fastcgi_pass`后面对应的端口号
+
+- 一定要保证 **`NGINX_WORK_DIR_DOCKER`** 和 **`PHP_WORK_DIR_DOCKER`** 的值保持一致，否则会出现静态文件可以正常访问，但`php`文件却访问不到
+
 - 配置文件中不能有空格，空格后的信息将被忽略
-- 在执行类似`php artisan migrate`的命令时，需要进入`lnmpr-php`容器内执行命令。
+
+- 在执行类似`php artisan migrate`的命令时，需要进入`lnmpr-php`容器内执行命令
 ```bash
 $ docker exec -it lnmpr-php bash
 
