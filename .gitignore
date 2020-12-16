@@ -1,6 +1,6 @@
 /vendor
 /mysql/.env
-/mysql/data
+!/mysql/data/readme.txt
 .env
 .env.backup
 sftp-config.json
