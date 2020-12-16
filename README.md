@@ -18,20 +18,25 @@ $ git clone https://github.com/liamhao/docker-lnmpr.git
 $ cd docker-lnmpr
 
 $ cp .env.example .env
-```
-4. 执行启动程序。此过程需要通过网络下载资源，启动时间会根据您当前的网络状况而定。出现`[Warning]`提示可以忽略。
-```bash
-$ ./lnmpr.sh up
-```
-5. 完成啦！可以访问`localhost`看下效果了～
 
-## 注意事项
-- 项目中访问`MySQL`和`Redis`服务，需要修改`Laravel`项目中的`.env`文件。将`DB_HOST`的值改为`lnmpr-mysql`，`REDIS_HOST`的值改为`lnmpr-redis`
+$ cp mysql/.env.example mysql/.env
 ```
+4. 项目中访问`MySQL`和`Redis`服务，需要修改`Laravel`项目中的`.env`文件。将`DB_HOST`的值改为`lnmpr-mysql`，`REDIS_HOST`的值改为`lnmpr-redis`
+```bash
 DB_HOST=lnmpr-mysql
 
 REDIS_HOST=lnmpr-redis
 ```
+5. 执行启动程序。此过程需要通过网络下载资源，启动时间会根据您当前的网络状况而定。出现`[Warning]`提示可以忽略。
+```bash
+$ chmod 777 lnmpr.sh
+
+$ ./lnmpr.sh up
+```
+6. 完成啦！可以访问`localhost`看下效果了～
+
+## 注意事项
+
 - `Mac`系统下:
 如果报错`Mounts denied: approving /path/to/work: file does not exist`。需要打开`Docker`的设置面板，点击`Experimental Features`标签，关闭`Use gRPC FUSE for file sharing`选项
 - 修改挂载的文件路径后，需要执行`./lnmpr.sh reup`才会生效，此命令会删除已生成的容器，然后重新构建容器。**容器内的数据会丢失**。
@@ -44,16 +49,31 @@ $ docker exec -it lnmpr-php bash
 root@66472e3dff92:/var/www/html# php artisan migrate
 ```
 
+## 常用命令
+
+- ./lnmpr.sh reup
+> 重建，将已有的容器删除，重新读取配置文件，生成新容器
+
+- ./lnmpr.sh up
+> 新建，读取配置文件，生成新容器
+
+- ./lnmpr.sh down
+> 删除，将已有的容器删除
+
+- ./lnmpr.sh restart
+> 重启，相当于`stop`后执行`start`
+
+- ./lnmpr.sh stop
+> 停止运行中的容器
+
+- ./lnmpr.sh start
+> 启动存在的容器
+
+- 其他相关命令参考[docker](https://docs.docker.com/engine/reference/commandline/cli)和[docker-compose](https://docs.docker.com/compose/reference/overview/)
+
 ## 配置信息
 
 ### .env
-- **`Laravel`相关**
-    + **DB_DATABASE**
-    > 同`Laravel`项目中`.env`文件中`DB_DATABASE`参数的值。在`MySQL`容器启动后会自动创建此`DB_DATABASE`
-    + **DB_USERNAME**
-    > 同`Laravel`项目中`.env`文件中`DB_USERNAME`参数的值。在`MySQL`容器启动后会自授权此`DB_USERNAME`
-    + **DB_PASSWORD**
-    > 同`Laravel`项目中`.env`文件中`DB_PASSWORD`参数的值。在`MySQL`容器启动后会自动授权`DB_USERNAME`用户以`DB_PASSWORD`登陆
 
 - **`Nginx`相关**
     + **NGINX_VERSION**
@@ -100,3 +120,13 @@ root@66472e3dff92:/var/www/html# php artisan migrate
     > 本机端口映射，用来接收网络请求，访问本机`REDIS_PORT_LOCAL`端口会转发到`Redis`服务容器中的`REDIS_PORT_DOCKER`端口
     + **REDIS_PORT_DOCKER**
     > `Redis`服务容器端口，用来接收网络请求
+
+### mysql/.env
+
+- **`Laravel`相关**
+    + **DB_DATABASE**
+    > 同`Laravel`项目中`.env`文件中`DB_DATABASE`参数的值。在`MySQL`容器启动后会自动创建此`DB_DATABASE`
+    + **DB_USERNAME**
+    > 同`Laravel`项目中`.env`文件中`DB_USERNAME`参数的值。在`MySQL`容器启动后会自授权此`DB_USERNAME`
+    + **DB_PASSWORD**
+    > 同`Laravel`项目中`.env`文件中`DB_PASSWORD`参数的值。在`MySQL`容器启动后会自动授权`DB_USERNAME`用户以`DB_PASSWORD`登陆

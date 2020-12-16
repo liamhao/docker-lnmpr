@@ -1,4 +1,5 @@
 /vendor
+/mysql/.env
 .env
 .env.backup
 sftp-config.json
