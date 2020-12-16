@@ -10,6 +10,8 @@ services:
       - .env
     image: mysql:${MYSQL_VERSION}
     container_name: lnmpr-mysql
+    volumes:
+      - ./mysql/data:/var/lib/mysql
     ports:
       - ${MYSQL_PORT_LOCAL}:${MYSQL_PORT_DOCKER}
     environment:

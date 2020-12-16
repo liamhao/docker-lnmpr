@@ -106,6 +106,10 @@ root@66472e3dff92:/var/www/html# php artisan migrate
     > `MySQL`服务容器端口，用来接收网络请求
     + **MYSQL_ROOT_PASSWORD**
     > `MySQL`服务容器初始化时，需要提供`root`账户的默认密码，用来设置`root`账户的默认密码
+    + **MYSQL_DATA_LOCAL**
+    > 本机数据库文件位置映射，用来保存数据库数据，防止重建容器后被数据库被删除
+    + **MYSQL_DATA_DOCKER**
+    > `MySQL`服务数据库文件位置
 
 - **`PHP`相关**
     + **PHP_VERSION**
