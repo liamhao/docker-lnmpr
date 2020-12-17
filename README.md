@@ -5,7 +5,8 @@
 - 一键启动容器，资源占用小。
 - 包含`PHP 8.0`、`MySQL 8.0`、`Redis`、`Nginx`开发环境，启动后立即可用，无需其他操作。
 - 根据`.env`配置文件生成容器，可自行配置所需服务版本。
-- `PHP`服务默认会安装`pdo_mysql`和`redis`扩展，免去手动操作。
+- `PHP`服务默认会安装`pdo_mysql`和`redis`和`pcntl`扩展，免去手动操作。
+> `pcntl`扩展是因为`laravel/horizon`扩展包需要用到
 
 ## 使用
 1. 安装`Docker`和`Docker Compose`两个程序。可参考[这里](https://docs.docker.com/compose/install)
