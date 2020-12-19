@@ -85,6 +85,10 @@ case $1 in
       privilegeMysqlUsers
     ;;
 
+  "ip" )
+      echo $(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $2)
+    ;;
+
   * )
     docker-compose $1
     ;;

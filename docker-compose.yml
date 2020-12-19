@@ -3,13 +3,15 @@ version: '3'
 services:
 
   mysql:
+    # 不指定env_file默认也是.env
+    # env_file:
+    #   - .env
     # 此处以container模式设置网络，此模式下msyql与php服务使用同一个网卡，以实现localhost/127.0.0.1内循环
     # 此模式下不可与ports端口转发参数共同使用
     # network_mode: "service:php"
-    env_file:
-      - .env
     image: mysql:${MYSQL_VERSION}
     container_name: lnmpr-mysql
+    privileged: true
     volumes:
       - ./mysql/data:/var/lib/mysql
     ports:
@@ -31,8 +33,6 @@ services:
       - ${REDIS_PORT_LOCAL}:${REDIS_PORT_DOCKER}
 
   php:
-    env_file:
-      - .env
     # image: php:${PHP_VERSION}
     build: 
       context: ./php
@@ -46,12 +46,42 @@ services:
       - ${PHP_PORT_LOCAL}:${PHP_PORT_DOCKER}
 
   nginx:
-    env_file:
-      - .env
     image: nginx:${NGINX_VERSION}
     container_name: lnmpr-nginx
+    privileged: true
     volumes:
       - ${NGINX_WORK_DIR_LOCAL}:${NGINX_WORK_DIR_DOCKER}
       - ${NGINX_CONF_LOCAL}:${NGINX_CONF_DOCKER}
+      - ${NGINX_CONF_D_LOCAL}:${NGINX_CONF_D_DOCKER}
+      - ./nginx/logs:/var/log/nginx
     ports:
       - ${NGINX_PORT_LOCAL}:${NGINX_PORT_DOCKER}
+
+  nginx-one:
+    image: nginx:${NGINX_VERSION}
+    container_name: lnmpr-nginx-one
+    # 在做为负载均服务的客户端时(指在nginx配置文件upstream中出现)时
+    # 需要定义hostname
+    # 否则负载均衡服务器在默认bridge网络模式下
+    # 会向宿主机寻找域名解析，读取到宿主机的/etc/hosts文件后
+    # 发现是127.0.0.1，负载均衡服务器会在自身寻找这个服务，当然是找不到的
+    hostname: one.com
+    privileged: true
+    volumes:
+      - ${NGINX_WORK_DIR_LOCAL}:${NGINX_WORK_DIR_DOCKER}
+      - ./nginx-one/conf.d:${NGINX_CONF_D_DOCKER}
+      - ./nginx-one/logs:/var/log/nginx
+    ports:
+      - 81:81
+
+  nginx-two:
+    image: nginx:${NGINX_VERSION}
+    container_name: lnmpr-nginx-two
+    hostname: two.com
+    privileged: true
+    volumes:
+      - ${NGINX_WORK_DIR_LOCAL}:${NGINX_WORK_DIR_DOCKER}
+      - ./nginx-two/conf.d:${NGINX_CONF_D_DOCKER}
+      - ./nginx-two/logs:/var/log/nginx
+    ports:
+      - 82:82

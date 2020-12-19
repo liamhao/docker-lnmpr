@@ -76,6 +76,9 @@ root@66472e3dff92:/var/www/html# php artisan migrate
 - ./lnmpr.sh start
 > 启动存在的容器
 
+- ./lnmpr.sh ip <容器Name>
+> 查看容器IP
+
 - 其他相关命令参考[docker](https://docs.docker.com/engine/reference/commandline/cli)和[docker-compose](https://docs.docker.com/compose/reference/overview/)
 
 ## 配置信息

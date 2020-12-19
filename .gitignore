@@ -1,6 +1,10 @@
 /vendor
 /mysql/.env
-/mysql/data/*
+/mysql/data
+/nginx/logs
+/nginx-one/logs
+/nginx-two/logs
+/work
 .env
 .env.backup
 sftp-config.json
