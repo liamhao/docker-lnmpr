@@ -11,7 +11,6 @@ services:
     # network_mode: "service:php"
     image: mysql:${MYSQL_VERSION}
     container_name: lnmpr-mysql
-    privileged: true
     volumes:
       - ./mysql/data:/var/lib/mysql
     ports:
@@ -48,7 +47,6 @@ services:
   nginx:
     image: nginx:${NGINX_VERSION}
     container_name: lnmpr-nginx
-    privileged: true
     volumes:
       - ${NGINX_WORK_DIR_LOCAL}:${NGINX_WORK_DIR_DOCKER}
       - ${NGINX_CONF_LOCAL}:${NGINX_CONF_DOCKER}
@@ -66,7 +64,6 @@ services:
     # 会向宿主机寻找域名解析，读取到宿主机的/etc/hosts文件后
     # 发现是127.0.0.1，负载均衡服务器会在自身寻找这个服务，当然是找不到的
     hostname: one.com
-    privileged: true
     volumes:
       - ${NGINX_WORK_DIR_LOCAL}:${NGINX_WORK_DIR_DOCKER}
       - ./nginx-one/conf.d:${NGINX_CONF_D_DOCKER}
@@ -78,10 +75,101 @@ services:
     image: nginx:${NGINX_VERSION}
     container_name: lnmpr-nginx-two
     hostname: two.com
-    privileged: true
     volumes:
       - ${NGINX_WORK_DIR_LOCAL}:${NGINX_WORK_DIR_DOCKER}
       - ./nginx-two/conf.d:${NGINX_CONF_D_DOCKER}
       - ./nginx-two/logs:/var/log/nginx
     ports:
       - 82:82
+
+
+  # consul-server-one:
+  #   image: consul:latest
+  #   hostname: consul-server-1
+  #   ports:
+  #     - 8500:8500
+  #   volumes:
+  #     - ./consul/data1:/consul/data
+  #   # consule 参数描述参考:https://www.cnblogs.com/harrychinese/p/consul_cluster.html
+  #   # -bootstrap 表示在 datacenter 中只能有一个 server 处于 bootstrap 模式并使自己成为 leader 角色, 该参数不能和 bootstrap-expect 参数公用.
+  #   # -bootstrap-expect=<int> 表明该 datacenter 中期望的引导节点个数,当设定该参数后, consul 直到 server 数量到达该设定值后, 才会引导整个集群,该标记不能和 bootstrap 共用, 引导节点不需要太多, 1 到 3 个就可以了.
+  #   command: "agent -server -bootstrap -ui -client 0.0.0.0"
+
+  # consul-server-two:
+  #   image: consul:latest
+  #   hostname: consul-server-2
+  #   ports:
+  #     - 8501:8500
+  #   volumes:
+  #     - ./consul/data2:/consul/data
+  #   command: "agent -server -ui -join consul-server-one -client 0.0.0.0"
+  #   depends_on:
+  #     - consul-server-one
+
+  # consul-server3:
+  #   image: consul:latest
+  #   hostname: consul-server-three
+  #   ports:
+  #     - 8502:8500
+  #   volumes:
+  #     - ./consul/data3:/consul/data
+  #   command: "agent -server -ui -join consul-server-one -client 0.0.0.0"
+  #   depends_on:
+  #     - consul-server-one
+
+  # consul-node-one:
+  #   image: consul:latest
+  #   hostname: consul-node-1
+  #   command: "agent"
+  #   depends_on:
+  #     - consul-server-one
+
+  # consul-node-two:
+  #   image: consul:latest
+  #   hostname: consul-node-2
+  #   command: "agent -join consul-server-one"
+  #   depends_on:
+  #     - consul-server-one
+
+
+  # consul-server-one:
+  #   image: consul:latest
+  #   container_name: consul-server-one
+  #   hostname: consul-server1
+  #   # 容器内默认监听8500端口
+  #   ports:
+  #     - 1111:8500
+  #   command: "agent -server -bootstrap-expect 3 -ui -client 0.0.0.0"
+
+  # consul-server-two:
+  #   image: consul:latest
+  #   container_name: consul-server-two
+  #   hostname: consul-server2
+  #   # 容器内默认监听8500端口
+  #   ports:
+  #     - 1112:8500
+  #   command: "agent -server -ui -client 0.0.0.0 -join consul-server-one"
+  #   depends_on:
+  #     - consul-server-one
+
+  # consul-client-one:
+  #   image: consul:latest
+  #   container_name: consul-client-one
+  #   hostname: consul-node1
+  #   # 容器内默认监听8500端口
+  #   ports:
+  #     - 1113:8500
+  #   command: "agent -ui -join consul-server-one"
+  #   depends_on:
+  #     - consul-server-one
+
+  # consul-client-two:
+  #   image: consul:latest
+  #   container_name: consul-client-two
+  #   hostname: consul-node2
+  #   # 容器内默认监听8500端口
+  #   ports:
+  #     - 1114:8500
+  #   command: "agent -ui -join consul-server-one"
+  #   depends_on:
+  #     - consul-server-one
