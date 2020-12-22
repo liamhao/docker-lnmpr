@@ -1,11 +1,17 @@
+
+#################################
+#
+# 反向代理配置
+#
+#################################
 server {
 
-  listen 82;
+  listen 80;
 
-  server_name two.com;
+  server_name localhost;
 
   # Docker服务器Nginx站点根目录
-  root /var/www/two/public;
+  root /var/www;
 
   # 添加几条有关安全的响应头,与 Google+ 的配置类似
   add_header X-Frame-Options "SAMEORIGIN";
@@ -42,3 +48,52 @@ server {
       deny all;
   }
 }
+
+
+#################################
+#
+# 正向代理，转发多个地址配置
+#
+#################################
+
+# server {
+# 
+#   listen 80;
+# 
+#   server_name localhost;
+# 
+#   # 将以/one开头的uri都转发到http://one.com域名去
+#   location /one {
+#     # 转发代理，proxy_pass必须要以/结尾
+#     proxy_pass   http://one.com/;
+#   }
+# 
+#   location /two {
+#     proxy_pass   http://two.com/;
+#   }
+# 
+# }
+
+
+
+
+#################################
+#
+# 定义服务集群时，配置的服务地址
+# 只能是域名+端口或者ip+端口，
+# 不能带有协议和路径
+#
+#################################
+
+# upstream hsj {
+#   server one.com:81;
+#   server two.com:82;
+# }
+# 
+# server {
+#   listen 80;
+#   server_name center.com;
+#   location / {
+#     proxy_pass http://hsj;
+#   }
+# }
