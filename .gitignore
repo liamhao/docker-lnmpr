@@ -1,9 +1,9 @@
 /vendor
+/consul
 /mysql/.env
 /mysql/data
+/postgres/data
 /nginx/logs
-/nginx-one/logs
-/nginx-two/logs
 /work
 .env
 .env.backup
