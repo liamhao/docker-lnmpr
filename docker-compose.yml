@@ -31,19 +31,19 @@ services:
   #   ports:
   #     - ${REDIS_PORT_LOCAL}:${REDIS_PORT_DOCKER}
 
-  php:
-    # image: php:${PHP_VERSION}
-    build: 
-      context: ./php
-      dockerfile: Dockerfile
-      args:
-        php_version: ${PHP_VERSION}
-    container_name: lnmpr-php
-    volumes:
-      # - ${PHP_WORK_DIR_LOCAL}:${PHP_WORK_DIR_DOCKER}
-      - ./nginx:/usr/share/nginx/html
-    ports:
-      - ${PHP_PORT_LOCAL}:${PHP_PORT_DOCKER}
+  # php:
+  #   # image: php:${PHP_VERSION}
+  #   build:
+  #     context: ./php
+  #     dockerfile: Dockerfile
+  #     args:
+  #       php_version: ${PHP_VERSION}
+  #   container_name: lnmpr-php
+  #   volumes:
+  #     # - ${PHP_WORK_DIR_LOCAL}:${PHP_WORK_DIR_DOCKER}
+  #     - ./nginx:/usr/share/nginx/html
+  #   ports:
+  #     - ${PHP_PORT_LOCAL}:${PHP_PORT_DOCKER}
 
   # nginx:
   #   image: nginx:${NGINX_VERSION}
@@ -56,62 +56,62 @@ services:
   #   ports:
   #     - ${NGINX_PORT_LOCAL}:${NGINX_PORT_DOCKER}
 
-  nginx-1:
-    image: nginx:${NGINX_VERSION}
-    # 在做为负载均服务的客户端时(指在nginx配置文件upstream中出现)时
-    # 需要定义hostname
-    # 否则负载均衡服务器在默认bridge网络模式下
-    # 会向宿主机寻找域名解析，读取到宿主机的/etc/hosts文件后
-    # 发现是127.0.0.1，负载均衡服务器会在自身寻找这个服务，当然是找不到的
-    # hostname: one.com
-    volumes:
-      - ./nginx/conf.d:${NGINX_CONF_D_DOCKER}
-      - ./nginx:/usr/share/nginx/html
-      # - ${NGINX_WORK_DIR_LOCAL}:${NGINX_WORK_DIR_DOCKER}
-      # - ./nginx-one/conf.d:${NGINX_CONF_D_DOCKER}
-      # - ./nginx-one/logs:/var/log/nginx
-    ports:
-      - 81:80
+  # nginx-1:
+  #   image: nginx:${NGINX_VERSION}
+  #   # 在做为负载均服务的客户端时(指在nginx配置文件upstream中出现)时
+  #   # 需要定义hostname
+  #   # 否则负载均衡服务器在默认bridge网络模式下
+  #   # 会向宿主机寻找域名解析，读取到宿主机的/etc/hosts文件后
+  #   # 发现是127.0.0.1，负载均衡服务器会在自身寻找这个服务，当然是找不到的
+  #   # hostname: one.com
+  #   volumes:
+  #     - ./nginx/conf.d:${NGINX_CONF_D_DOCKER}
+  #     - ./nginx:/usr/share/nginx/html
+  #     # - ${NGINX_WORK_DIR_LOCAL}:${NGINX_WORK_DIR_DOCKER}
+  #     # - ./nginx-one/conf.d:${NGINX_CONF_D_DOCKER}
+  #     # - ./nginx-one/logs:/var/log/nginx
+  #   ports:
+  #     - 81:80
 
-  nginx-2:
-    image: nginx:${NGINX_VERSION}
-    volumes:
-      - ./nginx/conf.d:${NGINX_CONF_D_DOCKER}
-      - ./nginx:/usr/share/nginx/html
-    ports:
-      - 82:80
+  # nginx-2:
+  #   image: nginx:${NGINX_VERSION}
+  #   volumes:
+  #     - ./nginx/conf.d:${NGINX_CONF_D_DOCKER}
+  #     - ./nginx:/usr/share/nginx/html
+  #   ports:
+  #     - 82:80
 
-  nginx-3:
-    image: nginx:${NGINX_VERSION}
-    volumes:
-      - ./nginx/conf.d:${NGINX_CONF_D_DOCKER}
-      - ./nginx:/usr/share/nginx/html
-    ports:
-      - 83:80
+  # nginx-3:
+  #   image: nginx:${NGINX_VERSION}
+  #   volumes:
+  #     - ./nginx/conf.d:${NGINX_CONF_D_DOCKER}
+  #     - ./nginx:/usr/share/nginx/html
+  #   ports:
+  #     - 83:80
 
-  nginx-4:
-    image: nginx:${NGINX_VERSION}
-    volumes:
-      - ./nginx/conf.d:${NGINX_CONF_D_DOCKER}
-      - ./nginx:/usr/share/nginx/html
-    ports:
-      - 84:80
+  # nginx-4:
+  #   image: nginx:${NGINX_VERSION}
+  #   volumes:
+  #     - ./nginx/conf.d:${NGINX_CONF_D_DOCKER}
+  #     - ./nginx:/usr/share/nginx/html
+  #   ports:
+  #     - 84:80
 
-  nginx-5:
-    image: nginx:${NGINX_VERSION}
-    volumes:
-      - ./nginx/conf.d:${NGINX_CONF_D_DOCKER}
-      - ./nginx:/usr/share/nginx/html
-    ports:
-      - 85:80
+  # nginx-5:
+  #   image: nginx:${NGINX_VERSION}
+  #   volumes:
+  #     - ./nginx/conf.d:${NGINX_CONF_D_DOCKER}
+  #     - ./nginx:/usr/share/nginx/html
+  #   ports:
+  #     - 85:80
 
-  nginx-6:
-    image: nginx:${NGINX_VERSION}
-    volumes:
-      - ./nginx/conf.d:${NGINX_CONF_D_DOCKER}
-      - ./nginx:/usr/share/nginx/html
-    ports:
-      - 86:80
+  # nginx-6:
+  #   image: nginx:${NGINX_VERSION}
+  #   volumes:
+  #     - ./nginx/conf.d:${NGINX_CONF_D_DOCKER}
+  #     - ./nginx:/usr/share/nginx/html
+  #   ports:
+  #     - 86:80
 
   ###########################################################
   #
@@ -119,93 +119,111 @@ services:
   #
   ###########################################################
 
-  postgres:
-    image: postgres
-    container_name: postgres
-    environment:
-      POSTGRES_USER: kong
-      POSTGRES_DB: kong
-      POSTGRES_PASSWORD: 123456
-    volumes:
-      - ./postgres/data:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
+  # postgres:
+  #   image: postgres
+  #   container_name: postgres
+  #   environment:
+  #     POSTGRES_USER: kong
+  #     POSTGRES_DB: kong
+  #     POSTGRES_PASSWORD: 123456
+  #   volumes:
+  #     - ./postgres/data:/var/lib/postgresql/data
+  #   ports:
+  #     - 5432:5432
 
-  kong-migration:
-    image: kong
-    command: kong migrations bootstrap
-    container_name: kong-migration
-    environment:
-      KONG_DATABASE: postgres
-      KONG_PG_HOST: postgres
-      KONG_PG_DATABASE: kong
-      KONG_PG_USER: kong
-      KONG_PG_PASSWORD: 123456
-    depends_on:
-      - postgres
-    deploy:
-      restart_policy:
-        condition: on-failure
-        max_attempts: 3
+  # kong-migration:
+  #   image: kong
+  #   command: kong migrations bootstrap
+  #   container_name: kong-migration
+  #   environment:
+  #     KONG_DATABASE: postgres
+  #     KONG_PG_HOST: postgres
+  #     KONG_PG_DATABASE: kong
+  #     KONG_PG_USER: kong
+  #     KONG_PG_PASSWORD: 123456
+  #   depends_on:
+  #     - postgres
+  #   deploy:
+  #     restart_policy:
+  #       condition: on-failure
+  #       max_attempts: 3
 
-  # 这里需要先执行kong-migration容器的数据库初始化命令
-  # 才可以正常启动Kong
-  kong:
-    image: kong
-    container_name: kong
-    environment:
-      KONG_DATABASE: postgres
-      KONG_PG_HOST: postgres
-      KONG_PG_DATABASE: kong
-      KONG_PG_USER: kong
-      KONG_PG_PASSWORD: 123456
-      KONG_PROXY_LISTEN: 0.0.0.0:8000
-      KONG_ADMIN_LISTEN: 0.0.0.0:8001
-      # KONG_DNS_RESOLVER: 172.21.0.10
-    ports:
-      - 8000:8000
-      - 8001:8001
-      - 8443:8443
-      - 8444:8444
-    depends_on:
-      - postgres
-    deploy:
-      restart_policy:
-        condition: on-failure
-        # delay: 5s
-        max_attempts: 3
+  # # 这里需要先执行kong-migration容器的数据库初始化命令
+  # # 才可以正常启动Kong
+  # kong:
+  #   image: kong
+  #   container_name: kong
+  #   environment:
+  #     KONG_DATABASE: postgres
+  #     KONG_PG_HOST: postgres
+  #     KONG_PG_DATABASE: kong
+  #     KONG_PG_USER: kong
+  #     KONG_PG_PASSWORD: 123456
+  #     KONG_PROXY_LISTEN: 0.0.0.0:8000
+  #     KONG_ADMIN_LISTEN: 0.0.0.0:8001
+  #     # KONG_DNS_RESOLVER: 172.21.0.10
+  #   ports:
+  #     - 8000:8000
+  #     - 8001:8001
+  #     - 8443:8443
+  #     - 8444:8444
+  #   depends_on:
+  #     - postgres
+  #   deploy:
+  #     restart_policy:
+  #       condition: on-failure
+  #       # delay: 5s
+  #       max_attempts: 3
 
-  # Kong 网关配置后台管理页面
-  konga:
-    image: pantsel/konga
-    container_name: konga
-    # environment:
-    #   DB_ADAPTER: postgres
-    #   DB_HOST: postgres
-    #   DB_PORT: 5432
-    #   DB_USER: kong
-    #   DB_PASSWORD: 123456
-    #   DB_DATABASE: kong
-    #   DB_PG_SCHEMA:
-    depends_on:
-      - postgres
-    ports:
-      - 1337:1337
+  # # Kong 网关配置后台管理页面
+  # konga:
+  #   image: pantsel/konga
+  #   container_name: konga
+  #   # environment:
+  #   #   DB_ADAPTER: postgres
+  #   #   DB_HOST: postgres
+  #   #   DB_PORT: 5432
+  #   #   DB_USER: kong
+  #   #   DB_PASSWORD: 123456
+  #   #   DB_DATABASE: kong
+  #   #   DB_PG_SCHEMA:
+  #   depends_on:
+  #     - postgres
+  #   ports:
+  #     - 1337:1337
 
 
   ###########################################################
   #
   # grafana 前端数据展示图表，支持多数据库查询
   #
+  # 1.机器运行情况面板插件:https://grafana.com/grafana/dashboards/8919
+  # 2.Kong网关运行情况面板插件:https://grafana.com/grafana/dashboards/7424
+  #
   ###########################################################
 
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    ports:
-      - 3000:3000
-    depends_on:
-      - kong-database
+  # grafana:
+  #   image: grafana/grafana
+  #   container_name: grafana
+  #   ports:
+  #     - 3000:3000
+
+  # # 【普罗米修斯】数据库
+  # prometheus:
+  #   image: prom/prometheus
+  #   container_name: prometheus
+  #   hostname: prometheus
+  #   ports:
+  #     - 9090:9090
+  #   volumes:
+  #     - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  # prometheus-exporter:
+  #   image: prom/node-exporter
+  #   container_name: prometheus-exporter
+  #   hostname: prometheus-exporter
+  #   ports:
+  #     - 9100:9100
 
 
   ###########################################################
