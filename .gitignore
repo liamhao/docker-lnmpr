@@ -5,6 +5,7 @@
 /postgres/data
 /nginx/logs
 /work
+/kong
 .env
 .env.backup
 sftp-config.json

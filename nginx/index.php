@@ -2,7 +2,9 @@
 
 echo "<h1>{$_SERVER['SERVER_ADDR']}</h1>";
 
-echo json_encode(getallheaders());
+// echo json_encode(getallheaders());
+
+var_dump($_SERVER["REQUEST_URI"]);
 
 if (isset($_GET['hsj'])) {
   echo "<h3>参数:</h3>";
