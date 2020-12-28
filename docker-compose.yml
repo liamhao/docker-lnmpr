@@ -50,10 +50,15 @@ services:
     volumes:
       # - ${PHP_WORK_DIR_LOCAL}:${PHP_WORK_DIR_DOCKER}
       - ./nginx:/usr/share/nginx/html
+      - ./php/config/my-php.ini:/usr/local/etc/php/conf.d/my-php.ini
+      - ./php/config/my-fpm.conf:/usr/local/etc/php-fpm.d/my-fpm.conf
     ports:
       - ${PHP_PORT_LOCAL}:${PHP_PORT_DOCKER}
     networks:
       - my-net
+    # DNS配置默认是53端口，如果自己设置DNS服务器，需要开放53/udp端口
+    dns:
+      - 172.28.0.89
 
   # nginx:
   #   image: nginx:${NGINX_VERSION}
@@ -88,11 +93,12 @@ services:
     volumes:
       - ./nginx/conf.d:${NGINX_CONF_D_DOCKER}
       - ./nginx:/usr/share/nginx/html
+      - ./dig.tgz:/dig.tgz
     ports:
       - 82:80
     networks:
-      - my-net
-
+      my-net:
+        ipv4_address: 172.28.0.12
 
   nginx-3:
     image: nginx:${NGINX_VERSION}
@@ -102,8 +108,8 @@ services:
     ports:
       - 83:80
     networks:
-      - my-net
-
+      my-net:
+        ipv4_address: 172.28.0.13
 
   nginx-4:
     image: nginx:${NGINX_VERSION}
@@ -113,8 +119,8 @@ services:
     ports:
       - 84:80
     networks:
-      - my-net
-
+      my-net:
+        ipv4_address: 172.28.0.14
 
   # nginx-5:
   #   image: nginx:${NGINX_VERSION}
@@ -198,33 +204,40 @@ services:
       - ./kong/config/kong.conf:/etc/kong/kong.conf
     depends_on:
       - postgres
-    deploy:
-      restart_policy:
-        condition: on-failure
-        # delay: 5s
-        max_attempts: 3
+    # 因为需要提前执行migration，所以要一直重启到数据库初始化成功
+    restart: on-failure:5
     networks:
       - my-net
-
+  ###############################################################
+  #
+  # konga-migration:
+  #   image: pantsel/konga
+  #   container_name: konga-migration
+  #   command: prepare
+  #   environment:
+  #     ADAPTER: postgres
+  #     # CONNECTION_URI: postgresql://用户名:密码@ip:(prot默认是5432)5432/数据库名字
+  #     CONNECTION_URI: postgresql://kong:123456@postgres:5432/konga
+  #   depends_on:
+  #     - postgres
+  #   networks:
+  #     - my-net
+  ###############################################################
 
   # Kong 网关配置后台管理页面
   # 用Consul服务实现动态DNS解析时
   # 需要将Service->Host设置为Consul中注册的服务名({your-service-name}.service.consul)
+  # Konga 前端不支持psql 12以上，或许只能用psql 9.6的版本才行了
   konga:
     image: pantsel/konga
     container_name: konga
-    # environment:
-    #   DB_ADAPTER: postgres
-    #   DB_HOST: postgres
-    #   DB_PORT: 5432
-    #   DB_USER: kong
-    #   DB_PASSWORD: 123456
-    #   DB_DATABASE: kong
-    #   DB_PG_SCHEMA:
-    # depends_on:
-    #   - postgres
+    volumes:
+      - ./konga/data:/app/kongadata
     ports:
       - 1337:1337
+    depends_on:
+      - postgres
+    restart: on-failure:5
     networks:
       - my-net
 
@@ -276,12 +289,12 @@ services:
     ports:
       - 8500:8500
     volumes:
+      - ./consul/config:/consul/config
       - ./consul/data1:/consul/data
     # consule 参数描述参考:https://www.cnblogs.com/harrychinese/p/consul_cluster.html
     # -bootstrap 表示在 datacenter 中只能有一个 server 处于 bootstrap 模式并使自己成为 leader 角色, 该参数不能和 bootstrap-expect 参数公用.
     # -bootstrap-expect=<int> 表明该 datacenter 中期望的引导节点个数,当设定该参数后, consul 直到 server 数量到达该设定值后, 才会引导整个集群,该标记不能和 bootstrap 共用, 引导节点不需要太多, 1 到 3 个就可以了.
     # -dns-port 指定提供DNS域名解析服务的端口
-    command: "agent -server -bootstrap -ui -client 0.0.0.0 -dns-port 8600"
     networks:
       my-net:
         ipv4_address: 172.28.0.89

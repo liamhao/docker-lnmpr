@@ -6,6 +6,7 @@
 /nginx/logs
 /work
 /kong
+/konga/data
 .env
 .env.backup
 sftp-config.json
