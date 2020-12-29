@@ -295,6 +295,7 @@ services:
     # -bootstrap 表示在 datacenter 中只能有一个 server 处于 bootstrap 模式并使自己成为 leader 角色, 该参数不能和 bootstrap-expect 参数公用.
     # -bootstrap-expect=<int> 表明该 datacenter 中期望的引导节点个数,当设定该参数后, consul 直到 server 数量到达该设定值后, 才会引导整个集群,该标记不能和 bootstrap 共用, 引导节点不需要太多, 1 到 3 个就可以了.
     # -dns-port 指定提供DNS域名解析服务的端口
+    # -recursor 当DNS服务无法解析域名时，指定另一个DNS服务IP作为解析
     networks:
       my-net:
         ipv4_address: 172.28.0.89

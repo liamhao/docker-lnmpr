@@ -1,11 +1,11 @@
 /vendor
-/consul
+/consul/data*
 /mysql/.env
 /mysql/data
 /postgres/data
 /nginx/logs
 /work
-/kong
+/kong/data
 /konga/data
 .env
 .env.backup

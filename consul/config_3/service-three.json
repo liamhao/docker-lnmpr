@@ -1,0 +1,21 @@
+{
+  "services": [
+    {
+      "id": "three_1",
+      "name": "three",
+      "tags": [
+        "three"
+      ],
+      "address": "172.28.0.26",
+      "port": 80,
+      "checks": [
+        {
+          "name": "TCP health check",
+          "tcp": "172.28.0.26:80",
+          "interval": "5s",
+          "timeout": "1s"
+        }
+      ]
+    }
+  ]
+}
